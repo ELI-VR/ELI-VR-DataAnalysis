@@ -66,16 +66,24 @@
 * Motion sickness Score: chosen value
 * PosturalStabilityBegin: The moment (after 2 seconds delay) of the postural stability measurement
 * PosturalStabilityEnd: After 5 seconds of the Begin, the stability measurement End.
+----------
 
+### Research questions
+**1. Is there an effect of condition on motion sickness?**
+ * independent variables:
+   * Main effect Embodiment: Blob vs. Body
+   * Main effect Perspective: First person vs. Hybrid
+ * dependent variable: motion sickness (_combine ratings + questionnaire data -- or individual analysis?_)
+ * --> 2x1 ANOVA (main effects and interaction)
 
+**2. Is there an effect of condition on embodiment?**
+ * independent variables:
+   * Main effect Embodiment: Blob vs. Body
+   * Main effect Perspective: First person vs. Hybrid
+ * dependent variable: Embodiment (_? how to operationalize ?_)
+ * --> 2x1 ANOVA
 
-
-
-
-
-
-
-
-
+**3. Is there a correlation between the postural stability test and motion sickness ratings?**
+* _How to operationalize the results of the postural stability test_?
 
 
