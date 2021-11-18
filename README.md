@@ -68,22 +68,37 @@
 * PosturalStabilityEnd: After 5 seconds of the Begin, the stability measurement End.
 ----------
 
+
 ### Research questions
-**1. Is there an effect of condition on motion sickness?**
+**1. Is there an effect of condition on motion sickness?** (Zora)
  * independent variables:
    * Main effect Embodiment: Blob vs. Body
    * Main effect Perspective: First person vs. Hybrid
- * dependent variable: motion sickness (_combine ratings + questionnaire data -- or individual analysis?_)
- * --> 2x1 ANOVA (main effects and interaction)
+ * dependent variables: 
+   * motion sickness - in-game questionnaire
+   * motion sickness - long questionnaire
+ * --> 2x2 ANOVA (main effects and interaction)
+
 
 **2. Is there an effect of condition on embodiment?**
  * independent variables:
    * Main effect Embodiment: Blob vs. Body
    * Main effect Perspective: First person vs. Hybrid
- * dependent variable: Embodiment (_? how to operationalize ?_)
- * --> 2x1 ANOVA
+ * dependent variables:
+   * Embodiment - questionnaire data
+   * Embodiment - voice recording data
+     * language processing algorithm (Yesid)
+     * **how exactly to operationalize? number of I/me vs. ? or...?**
+ * --> 2x2 ANOVA (main effects and interaction)
+
 
 **3. Is there a correlation between the postural stability test and motion sickness ratings?**
 * _How to operationalize the results of the postural stability test_?
+   * check papers!
 
 
+Tasks:
+* Linus, Yesid, Zora: check papers for postural stability test (asap; more variables? duration? how to operationalize?)
+* Zora: process long questionnaire data, start script for 1.
+* Yesid: NLP stuff (with german and english audio)
+* Linus: send voice data to Yesid
