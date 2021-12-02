@@ -6,6 +6,7 @@ df = pd.read_excel("pilot_data_questionnaires.xlsx", converters={'BE04_02':str,'
 # calculate scores for the questionnaires
 calculateSSQ(df)
 calculateP(df)
+calculateEB(df)
 
 # rename columns for more clarity
 renameColumns(df)
