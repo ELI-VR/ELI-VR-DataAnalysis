@@ -2,8 +2,9 @@ from functions import *
 import pandas as pd
 import os
 
-df = pd.read_excel("pilot_data_questionnaires.xlsx", converters={'BE04_01':str, 'BE04_02':str, 'BE04_03':str})
 search_path = os.getcwd() + '\\data\\' # location of the data files
+
+df = pd.read_excel(search_path + "pilot_data_questionnaires.xlsx", converters={'BE04_01':str, 'BE04_02':str, 'BE04_03':str})
 
 # calculate scores for the questionnaires
 df = calculateSSQ(df)
@@ -23,5 +24,5 @@ data = getRelevantColumns(df)
 data = getInGameMS(data, search_path)
 
 # save new data frame to csv
-data.to_csv("pilot_data_questionnaires_preprocessed.csv", index=False)
+data.to_csv(search_path + "pilot_data_questionnaires_preprocessed.csv", index=False)
 
