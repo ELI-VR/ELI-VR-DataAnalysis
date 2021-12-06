@@ -1,4 +1,8 @@
 import pandas as pd
+import os
+import re
+import json
+
 
 def calculateSSQ(df):
     '''
@@ -53,6 +57,8 @@ def calculateSSQ(df):
     df["SSQ_D_AVG"] = df[['SSQ_D_FP', 'SSQ_D_H']].mean(axis=1)
     df["SSQ_TS_AVG"] = df[['SSQ_TS_FP', 'SSQ_TS_H']].mean(axis=1)
 
+    return df
+
 def calculateP(df):
     '''
     calculates the scores for the Presence Questionnaire
@@ -86,6 +92,8 @@ def calculateP(df):
 
     # average
     df["P_AVG"] = df[['P_H', 'P_FP']].mean(axis=1)
+
+    return df
 
 
 def calculateEB(df):
@@ -157,6 +165,8 @@ def calculateEB(df):
     df["EB_SP_AVG"] = df[['EB_SP_FP', 'EB_SP_H']].mean(axis=1)
     df["EB_EB_AVG"] = df[['EB_EB_FP', 'EB_EB_H']].mean(axis=1)
 
+    return df
+
 def renameColumns(df):
     '''
     renames the columns with general info to clearer names
@@ -166,6 +176,7 @@ def renameColumns(df):
 
     df.rename(columns={"BE04_01": "ID", "BE04_02": "order_1", "BE04_03": "order_2",
                        "BE05": "blob", "BE01": "german"}, inplace=True)
+    return df
 
 
 def getRelevantColumns(df):
@@ -180,5 +191,62 @@ def getRelevantColumns(df):
                'EB_SP_FP', 'EB_SP_H', 'EB_SP_AVG',
                'EB_EB_FP', 'EB_EB_H', 'EB_EB_AVG']].copy()
     return temp
+
+def getInGameMS(df, search_path):
+    df["ID"] = df['ID'].astype(str).str.zfill(4)
+
+    # list of filenames that include the in-game motion sickness ratings
+    fnames = [x for x in os.listdir(path=search_path) if re.match("\d+_(?:FirstPerson|Hybrid)_\d+.json", x)]
+
+    ids = []
+    hybrid = {0: [], 1: [], 2: [], 3: [], 4: []}
+    firstPerson = {0: [], 1: [], 2: [], 3: [], 4: []}
+
+    for file in fnames:
+        # load json file
+        temp = json.load(open(search_path + file))
+
+        # hybrid data
+        if "Hybrid" in file:
+            # save participant id for later
+            ids.append(temp['participantID'])
+            # for each area
+            for i in range(len(temp['_stationDataFrames'])):
+                stationID = int(temp['_stationDataFrames'][i]["stationID"])
+                score = int(temp['_stationDataFrames'][i]['MotionsicknessScore'])
+                # save motion sickness score
+                hybrid[stationID].append(score)
+
+                # first person data
+        else:
+            # for each area
+            for i in range(5):
+                stationID = int(temp['_stationDataFrames'][i]["stationID"])
+                score = int(temp['_stationDataFrames'][i]['MotionsicknessScore'])
+                # save motion sickness score
+                firstPerson[stationID].append(score)
+
+    if len(df["ID"]) != len(ids):
+        raise ValueError("Number of participants in questionnaire data vs. game data don't match!")
+
+    if df["ID"].tolist() != ids:
+        raise ValueError("Participant IDs in questionnaire data vs. game data don't match!")
+
+    # add motion sickness score of each area to the data frame
+    df["H_0_MS"] = hybrid[0]
+    df["H_1_MS"] = hybrid[1]
+    df["H_2_MS"] = hybrid[2]
+    df["H_3_MS"] = hybrid[3]
+    df["H_4_MS"] = hybrid[4]
+    df["H_AVG_MS"] = df[['H_0_MS', 'H_1_MS', 'H_2_MS', 'H_3_MS', 'H_4_MS']].mean(axis=1)
+
+    df["FP_0_MS"] = firstPerson[0]
+    df["FP_1_MS"] = firstPerson[1]
+    df["FP_2_MS"] = firstPerson[2]
+    df["FP_3_MS"] = firstPerson[3]
+    df["FP_4_MS"] = firstPerson[4]
+    df["FP_AVG_MS"] = df[['FP_0_MS', 'FP_1_MS', 'FP_2_MS', 'FP_3_MS', 'FP_4_MS']].mean(axis=1)
+
+    return df
 
 
