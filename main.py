@@ -13,7 +13,11 @@ import os
 search_path = os.getcwd() + '\\data\\' # location of the data files
 
 ##### Preprocessing #####
-df = pd.read_excel(search_path + "pilot_data_questionnaires.xlsx", converters={'BE04_01':str, 'BE04_02':str, 'BE04_03':str})
+df = pd.read_excel(search_path + "data_questionnaires.xlsx", converters={'BE04_01':str, 'BE04_02':str, 'BE04_03':str})
+
+# in case the columns with the order of areas is missing a 0, prepend it
+df['BE04_02'] = df['BE04_02'].apply(lambda x: '0' + x if len(x) == 4 else x)
+df['BE04_03'] = df['BE04_03'].apply(lambda x: '0' + x if len(x) == 4 else x)
 
 # calculate scores for the questionnaires (outside VR)
 df = calculateSSQ(df, items=items_SSQ, weights=weights_SSQ)
@@ -33,7 +37,7 @@ data = getRelevantColumns(df, relevant_cols)
 data = getInGameMS(data, search_path)
 
 # save new data frame to csv
-data.to_csv(search_path + "pilot_data_questionnaires_preprocessed.csv", index=False)
+data.to_csv(search_path + "data_questionnaires_preprocessed.csv", index=False)
 
 ##### Data analysis #####
 

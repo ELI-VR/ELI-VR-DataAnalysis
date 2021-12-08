@@ -179,7 +179,7 @@ def getInGameMS(df, search_path):
     df["ID"] = df['ID'].astype(str).str.zfill(3)
 
     # list of filenames that include the in-game motion sickness ratings
-    fnames = [x for x in os.listdir(path=search_path) if re.match("\d+_(?:FirstPerson|Hybrid)_\d+.json", x)]
+    fnames = [x for x in os.listdir(path=search_path) if re.match("\d+_(?:Blob|Avatar)(?:Firstperson|Hybrid)_\d+.json", x)]
 
     ids = []
     hybrid = {0: [], 1: [], 2: [], 3: [], 4: []}
@@ -195,19 +195,21 @@ def getInGameMS(df, search_path):
             ids.append(temp['participantID'])
             # for each area
             for i in range(len(temp['_stationDataFrames'])):
-                stationID = int(temp['_stationDataFrames'][i]["stationID"])
-                score = int(temp['_stationDataFrames'][i]['MotionsicknessScore'])
-                # save motion sickness score
-                hybrid[stationID].append(score)
+                if temp['_stationDataFrames'][i]["stationID"]:
+                    stationID = int(temp['_stationDataFrames'][i]["stationID"])
+                    score = int(temp['_stationDataFrames'][i]['MotionsicknessScore'])
+                    # save motion sickness score
+                    hybrid[stationID].append(score)
 
         # first person data
-        else:
+        elif "Firstperson" in file:
             # for each area
-            for i in range(5):
-                stationID = int(temp['_stationDataFrames'][i]["stationID"])
-                score = int(temp['_stationDataFrames'][i]['MotionsicknessScore'])
-                # save motion sickness score
-                firstPerson[stationID].append(score)
+            for i in range(len(temp['_stationDataFrames'])):
+                if temp['_stationDataFrames'][i]["stationID"]:
+                    stationID = int(temp['_stationDataFrames'][i]["stationID"])
+                    score = int(temp['_stationDataFrames'][i]['MotionsicknessScore'])
+                    # save motion sickness score
+                    firstPerson[stationID].append(score)
 
     if len(df["ID"]) != len(ids):
         raise ValueError("Number of participants in questionnaire data vs. game data don't match!")
