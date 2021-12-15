@@ -66,6 +66,10 @@ items_EB = {'EL_1': ['EB01_01', 'EB01_02', 'EB01_03', 'EB01_04', 'EB06_01', 'EB0
            'O_1': ['EB05_01', 'EB05_02', 'EB05_03', 'EB05_04', 'EB09_01', 'EB09_02', 'EB09_03', 'EB09_04'],
            'O_2': ['EB15_01', 'EB15_02', 'EB15_03', 'EB15_04', 'EB20_01', 'EB20_02', 'EB20_03', 'EB20_04']}
 
+### dictionary for renaming columns
+dict_renaming = {"BE04_01": "ID", "BE04_02": "order_1", "BE04_03": "order_2",
+                 "BE05": "blob", "BE01": "german"}
+
 ### list of columns to keep in the new df
 relevant_cols = ["STARTED", "ID", "german", "blob", "order_1", "order_2", # general info
                  # data from simulator sickness questionnaire
@@ -75,9 +79,7 @@ relevant_cols = ["STARTED", "ID", "german", "blob", "order_1", "order_2", # gene
                 # data from presence questionnaire
                 'P_FP', 'P_H', 'P_AVG',
                 # data from presence & embodiment questionnaire
+                'EB_EL_FP', 'EB_PA_FP', 'EB_EL_H', 'EB_PA_H',
                 'EB_SP_FP', 'EB_SP_H', 'EB_SP_AVG',
+                'EB_SL_FP', 'EB_A_FP', 'EB_O_FP', 'EB_SL_H', 'EB_A_H', 'EB_O_H',
                 'EB_EB_FP', 'EB_EB_H', 'EB_EB_AVG']
-
-### dictionary for renaming columns
-dict_renaming = {"BE04_01": "ID", "BE04_02": "order_1", "BE04_03": "order_2",
-                 "BE05": "blob", "BE01": "german"}

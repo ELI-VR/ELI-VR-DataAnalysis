@@ -145,6 +145,7 @@ def calculateEB(df, items):
 def renameColumns(df, renaming):
     '''
     renames the columns with general info to clearer names
+    transforms language and avatar/ blob condition to 0 and 1 values
 
     Args:
         df (pd.DataFrame): df with the data
@@ -155,7 +156,6 @@ def renameColumns(df, renaming):
 
     df.rename(columns=renaming, inplace=True)
     return df
-
 
 def getRelevantColumns(df, list_of_cols):
     '''
