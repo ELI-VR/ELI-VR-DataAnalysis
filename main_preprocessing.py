@@ -5,8 +5,8 @@ Author: Zora Nolte
 Last updated: 08.12.2021
 '''
 
-from functions import *
-from parameters import *
+from functions_preprocessing import *
+from parameters_preprocessing import *
 import pandas as pd
 import os
 
