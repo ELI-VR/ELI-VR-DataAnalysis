@@ -1,0 +1,22 @@
+Instructions for running the analysis
+_______________________________
+
+PREPROCESS QUESTIONNAIRE AND MS-RATING DATA
+1. download the questionnaire data from www.soscisurvey.de (Excel, "Numerische Codes", "Fehlende Werte entfernen")
+2. rename the the excel file to "data_questionnaires.xlsx" and move it to the "data" folder
+3. move all overview files to the "data" folder (i.e. "001_BlobHybrid_01234.json", "001_BlobFirstperson_03124.json", etc.)
+4. run 'main_preprocessing.py' 
+--> this will create a new file called "data_questionnaires_preprocessed.xlsx" that includes the 
+preprocessed questionnaire data and the in-game rating data for all participants
+
+ANALYZE MOTION SICKNESS DATA
+1. do the preprocessing described above
+2. run the jupyter notebook "Analysis-Motion-Sickness.ipynb"
+
+ANALYZE EMBODIMENT AND PRESENCE DATA
+1. 
+
+CREATE PLOTS
+1. do the preprocessing described above
+2. run the jupyter notebook "Plots.ipynb"
+ 
