@@ -1,6 +1,20 @@
 Instructions for running the analysis
 _______________________________
 
+REQUIRED PYTHON PACKAGES
+json
+matplotlib.pyplot
+matplotlib.ticker
+numpy
+os
+pandas
+pingouin
+re
+seaborn
+scipy.stats
+statsmodels.graphics.factorplots
+
+
 PREPROCESS QUESTIONNAIRE AND MS-RATING DATA
 1. download the questionnaire data from www.soscisurvey.de (Excel, "Numerische Codes", "Fehlende Werte entfernen")
 2. rename the the excel file to "data_questionnaires.xlsx" and move it to the "data" folder
@@ -16,7 +30,7 @@ ANALYZE MOTION SICKNESS DATA
 ANALYZE EMBODIMENT AND PRESENCE DATA
 1. 
 
-CREATE PLOTS
+CREATE PLOTS OF THE QUESTIONNAIRE DATA
 1. do the preprocessing described above
-2. run the jupyter notebook "Plots.ipynb"
+2. run the jupyter notebook "Plots-Questionnaire-Data.ipynb"
  
