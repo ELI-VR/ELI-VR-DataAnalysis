@@ -2,7 +2,7 @@
 Main script for the data analysis of the ELI-VR study project
 
 Author: Zora Nolte
-Last updated: 08.12.2021
+Last updated: 02.02.2022
 '''
 
 from functions_preprocessing import *
@@ -14,6 +14,9 @@ search_path = os.getcwd() + '\\data\\' # location of the data files
 
 ##### Preprocessing #####
 df = pd.read_excel(search_path + "data_questionnaires.xlsx", converters={'BE04_01':str, 'BE04_02':str, 'BE04_03':str})
+
+# in case the id column missing a 0, prepend it
+df['BE04_01'] = df['BE04_01'].str.zfill(3)
 
 # in case the columns with the order of areas is missing a 0, prepend it
 df['BE04_02'] = df['BE04_02'].apply(lambda x: '0' + x if len(x) == 4 else x)

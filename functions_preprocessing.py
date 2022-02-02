@@ -2,7 +2,7 @@
 Functions for the data analysis of the ELI-VR study project
 
 Author: Zora Nolte
-Last updated: 08.12.2021
+Last updated: 02.02.2022
 '''
 
 import pandas as pd
@@ -181,7 +181,8 @@ def getInGameMS(df, search_path):
     # list of filenames that include the in-game motion sickness ratings
     fnames = [x for x in os.listdir(path=search_path) if re.match("\d+_(?:Blob|Avatar)(?:Firstperson|Hybrid)_\d+.json", x)]
 
-    ids = []
+    idsHybrid = []
+    idsFp = []
     hybrid = {0: [], 1: [], 2: [], 3: [], 4: []}
     firstPerson = {0: [], 1: [], 2: [], 3: [], 4: []}
 
@@ -192,7 +193,7 @@ def getInGameMS(df, search_path):
         # hybrid data
         if "Hybrid" in file:
             # save participant id for later
-            ids.append(temp['participantID'])
+            idsHybrid.append(temp['participantID'])
             # for each area
             for i in range(len(temp['_stationDataFrames'])):
                 if temp['_stationDataFrames'][i]["stationID"]:
@@ -203,6 +204,8 @@ def getInGameMS(df, search_path):
 
         # first person data
         elif "Firstperson" in file:
+            # save participant id for later
+            idsFp.append(temp['participantID'])
             # for each area
             for i in range(len(temp['_stationDataFrames'])):
                 if temp['_stationDataFrames'][i]["stationID"]:
@@ -211,11 +214,34 @@ def getInGameMS(df, search_path):
                     # save motion sickness score
                     firstPerson[stationID].append(score)
 
-    if len(df["ID"]) != len(ids):
-        raise ValueError("Number of participants in questionnaire data vs. game data don't match!")
+    if len(df["ID"]) != len(idsHybrid):
+        print("IDs in the excel file:")
+        print(df["ID"].tolist())
+        print("IDs of all the hybrid files:")
+        print(idsHybrid)
+        raise ValueError("Number of participants in questionnaire data vs. HYBRID game data don't match!")
 
-    if df["ID"].tolist() != ids:
-        raise ValueError("Participant IDs in questionnaire data vs. game data don't match!")
+    if len(df["ID"]) != len(idsFp):
+        print("IDs in the excel file:")
+        print(df["ID"].tolist())
+        print("IDs of all the first person files:")
+        print(idsFp)
+        raise ValueError("Number of participants in questionnaire data vs. FIRSTPERSON game data don't match!")
+
+    if df["ID"].tolist() != idsHybrid:
+        print("IDs in the excel file:")
+        print(df["ID"].tolist())
+        print("IDs of all the hybrid files:")
+        print(idsHybrid)
+        raise ValueError("Participant IDs in questionnaire data vs. HYBRID game data don't match!")
+
+    if df["ID"].tolist() != idsFp:
+        print("IDs in the excel file:")
+        print(df["ID"].tolist())
+        print("IDs of all the first person files:")
+        print(idsFp)
+        raise ValueError("Participant IDs in questionnaire data vs. FIRSTPERSON game data don't match!")
+
 
     # add motion sickness score of each area to the data frame
     df["H_0_MS"] = hybrid[0]
