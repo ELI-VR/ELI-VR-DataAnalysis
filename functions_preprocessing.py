@@ -70,6 +70,14 @@ def calculateP(df, items):
         items (dict): dictionary containing a list of items for each subscale
     '''
 
+    # invert items 14, 17, 18
+    idx = [14, 24 * 1 + 14, 24 * 2 + 14, 24 * 3 + 14, 17, 24 * 1 + 17, 24 * 2 + 17, 24 * 3 + 17, 18, 24 * 1 + 18,
+           24 * 2 + 18, 24 * 3 + 18]
+    idx = [x - 1 for x in idx] # because indices start at 0 not 1
+    inverted_items = [items[i] for i in idx]
+    for column in inverted_items:
+        df[column] = df[column].apply(lambda x: 7 - x + 1)
+
     # if first person condition came before hybrid condition
     df.loc[df['BE06_01'] == 1, 'P_FP'] = df.loc[:, items[:len(items)//2]].sum(axis=1, skipna=True)
     df.loc[df['BE06_01'] == 1, 'P_H'] = df.loc[:, items[len(items)//2:]].sum(axis=1, skipna=True)
