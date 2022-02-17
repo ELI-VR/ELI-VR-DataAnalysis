@@ -13,8 +13,10 @@ import json
 
 def calculateSSQ(df, items, weights):
     '''
-    calculates the scores for the Simulator Sickness Questionnaire (https://doi.org/10.1207/s15327108ijap0303_3)
+    For each viewing mode (first person/ hybrid), calculates the subscale scores of the SSQ by summing up the items
+    and multiplying with the subscale weight, and adds the new columns to the existing data frame.
 
+    Sickness Questionnaire: https://doi.org/10.1207/s15327108ijap0303_3
     subscales:
     O: Oculomotor (items: 1, 2, 3, 4, 5, 9, 11)
     D: Disorientation (items: 5, 8, 10, 11, 12, 13, 14)
@@ -27,6 +29,7 @@ def calculateSSQ(df, items, weights):
 
     ! remark: -7 because the scoring is wrong ([1:4] instead of [0:4])
     '''
+
     # if the first person condition came first, the first run of the questionnaire is connected to it
     df.loc[df['BE06_01'] == 1, 'SSQ_N_FP'] = (df.loc[:, items['SQ_N_1']].sum(axis=1, skipna=True).astype(float) - 7) * weights['N']
     df.loc[df['BE06_01'] == 1, 'SSQ_O_FP'] = (df.loc[:, items['SQ_O_1']].sum(axis=1, skipna=True).astype(float) - 7) * weights['O']
@@ -59,7 +62,7 @@ def calculateSSQ(df, items, weights):
 
 def calculateP(df, items):
     '''
-    calculates the scores for the Presence Questionnaire
+    Calculates the scores for the Presence Questionnaire (per viewing mode) and adds the new columns to the existing data frame.
 
     total score = sum over all 32 items (1-7 scale)
 
@@ -94,7 +97,8 @@ def calculateP(df, items):
 
 def calculateEB(df, items):
     '''
-    calculates the scores for the Presence and Embodiment Questionnaire
+    For each viewing mode (first person/ hybrid), calculates the subscale scores of the embodiment & presence questionnaire
+    by summing up the items, and adds the new columns to the existing data frame.
 
     subscales:  Spatial Presence (SP)
                     environmental location (EL)
@@ -178,7 +182,7 @@ def getRelevantColumns(df, list_of_cols):
 
 def getInGameMS(df, search_path):
     '''
-    pulls the motion sickness ratings for each area and adds them to the dataframe
+    pulls the motion sickness ratings (of all subjects) for each area and add a new column for each area to the dataframe
 
     Args:
         df (pd.DataFrame): df with the data
@@ -201,7 +205,7 @@ def getInGameMS(df, search_path):
         # hybrid data
         if "Hybrid" in file:
             # save participant id for later
-            idsHybrid.append(temp['participantID'])
+            idsHybrid.append(temp['participantID'].zfill(3))
             # for each area
             for i in range(len(temp['_stationDataFrames'])):
                 if temp['_stationDataFrames'][i]["stationID"]:
@@ -213,7 +217,7 @@ def getInGameMS(df, search_path):
         # first person data
         elif "Firstperson" in file:
             # save participant id for later
-            idsFp.append(temp['participantID'])
+            idsFp.append(temp['participantID'].zfill(3))
             # for each area
             for i in range(len(temp['_stationDataFrames'])):
                 if temp['_stationDataFrames'][i]["stationID"]:
@@ -222,6 +226,10 @@ def getInGameMS(df, search_path):
                     # save motion sickness score
                     firstPerson[stationID].append(score)
 
+    idsHybrid = sorted(idsHybrid)
+    idsFp = sorted(idsFp)
+
+    # check if the IDs of the files vs. the questionnaire data match
     if len(df["ID"]) != len(idsHybrid):
         print("IDs in the excel file:")
         print(df["ID"].tolist())

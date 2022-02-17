@@ -36,11 +36,13 @@ df = df.sort_values(by=['ID'])
 # create data frame with only the relevant columns
 data = getRelevantColumns(df, relevant_cols)
 
-# add the data from the in-game motion sickness questionnaire (inside VR)
+# add the data from the in-game motion sickness ratings (inside VR)
 data = getInGameMS(data, search_path)
 
 # save new data frame to csv
 data.to_csv(search_path + "data_questionnaires_preprocessed.csv", index=False)
+
+print("Success! Preprocessed questionnaire data has been saved!")
 
 ##### Data analysis #####
 
