@@ -72,6 +72,25 @@ dict_renaming = {"BE04_01": "ID", "BE04_02": "order_1", "BE04_03": "order_2",
 
 ### list of columns to keep in the new df
 relevant_cols = ["STARTED", "ID", "german", "blob", "order_1", "order_2", # general info
+
+                 "VR06", "VR17", # preferred locomotion
+
+                 # Video game experience: type
+                 "VR02_01", "VR02_02", "VR02_03", "VR02_04",
+                 "VR02_05", "VR02_06", "VR02_07",
+                 "VR13_01", "VR13_02", "VR13_03", "VR13_04",
+                 "VR13_05", "VR13_06", "VR13_07",
+
+                 # video game experience: perspective
+                 "VR03_01", "VR03_02", "VR03_03", "VR03_06",
+                 "VR14_01", "VR14_02", "VR14_03", "VR14_06",
+
+                 # VR experience:
+                 "VR05_01", "VR05_02", "VR05_03", "VR05_06", "VR05_07",
+                 "VR05_08", "VR05_08a", "VR05_09",
+                 "VR16_01", "VR16_02", "VR16_03", "VR16_06", "VR16_07",
+                 "VR16_08", "VR16_08a", "VR16_09",
+
                  # data from simulator sickness questionnaire
                 'SSQ_N_FP', 'SSQ_O_FP', 'SSQ_D_FP', 'SSQ_TS_FP',
                 'SSQ_N_H', 'SSQ_O_H', 'SSQ_D_H', 'SSQ_TS_H',

@@ -2,7 +2,7 @@
 Functions for the data analysis of the ELI-VR study project
 
 Author: Zora Nolte
-Last updated: 08.12.2021
+Last updated: 02.02.2022
 '''
 
 import pandas as pd
@@ -13,8 +13,10 @@ import json
 
 def calculateSSQ(df, items, weights):
     '''
-    calculates the scores for the Simulator Sickness Questionnaire (https://doi.org/10.1207/s15327108ijap0303_3)
+    For each viewing mode (first person/ hybrid), calculates the subscale scores of the SSQ by summing up the items
+    and multiplying with the subscale weight, and adds the new columns to the existing data frame.
 
+    Sickness Questionnaire: https://doi.org/10.1207/s15327108ijap0303_3
     subscales:
     O: Oculomotor (items: 1, 2, 3, 4, 5, 9, 11)
     D: Disorientation (items: 5, 8, 10, 11, 12, 13, 14)
@@ -27,6 +29,7 @@ def calculateSSQ(df, items, weights):
 
     ! remark: -7 because the scoring is wrong ([1:4] instead of [0:4])
     '''
+
     # if the first person condition came first, the first run of the questionnaire is connected to it
     df.loc[df['BE06_01'] == 1, 'SSQ_N_FP'] = (df.loc[:, items['SQ_N_1']].sum(axis=1, skipna=True).astype(float) - 7) * weights['N']
     df.loc[df['BE06_01'] == 1, 'SSQ_O_FP'] = (df.loc[:, items['SQ_O_1']].sum(axis=1, skipna=True).astype(float) - 7) * weights['O']
@@ -59,7 +62,7 @@ def calculateSSQ(df, items, weights):
 
 def calculateP(df, items):
     '''
-    calculates the scores for the Presence Questionnaire
+    Calculates the scores for the Presence Questionnaire (per viewing mode) and adds the new columns to the existing data frame.
 
     total score = sum over all 32 items (1-7 scale)
 
@@ -69,6 +72,14 @@ def calculateP(df, items):
         df (pd.DataFrame): df with the data
         items (dict): dictionary containing a list of items for each subscale
     '''
+
+    # invert items 14, 17, 18
+    idx = [14, 24 * 1 + 14, 24 * 2 + 14, 24 * 3 + 14, 17, 24 * 1 + 17, 24 * 2 + 17, 24 * 3 + 17, 18, 24 * 1 + 18,
+           24 * 2 + 18, 24 * 3 + 18]
+    idx = [x - 1 for x in idx] # because indices start at 0 not 1
+    inverted_items = [items[i] for i in idx]
+    for column in inverted_items:
+        df[column] = df[column].apply(lambda x: 7 - x + 1)
 
     # if first person condition came before hybrid condition
     df.loc[df['BE06_01'] == 1, 'P_FP'] = df.loc[:, items[:len(items)//2]].sum(axis=1, skipna=True)
@@ -86,7 +97,8 @@ def calculateP(df, items):
 
 def calculateEB(df, items):
     '''
-    calculates the scores for the Presence and Embodiment Questionnaire
+    For each viewing mode (first person/ hybrid), calculates the subscale scores of the embodiment & presence questionnaire
+    by summing up the items, and adds the new columns to the existing data frame.
 
     subscales:  Spatial Presence (SP)
                     environmental location (EL)
@@ -170,7 +182,7 @@ def getRelevantColumns(df, list_of_cols):
 
 def getInGameMS(df, search_path):
     '''
-    pulls the motion sickness ratings for each area and adds them to the dataframe
+    pulls the motion sickness ratings (of all subjects) for each area and add a new column for each area to the dataframe
 
     Args:
         df (pd.DataFrame): df with the data
@@ -181,7 +193,8 @@ def getInGameMS(df, search_path):
     # list of filenames that include the in-game motion sickness ratings
     fnames = [x for x in os.listdir(path=search_path) if re.match("\d+_(?:Blob|Avatar)(?:Firstperson|Hybrid)_\d+.json", x)]
 
-    ids = []
+    idsHybrid = []
+    idsFp = []
     hybrid = {0: [], 1: [], 2: [], 3: [], 4: []}
     firstPerson = {0: [], 1: [], 2: [], 3: [], 4: []}
 
@@ -192,7 +205,7 @@ def getInGameMS(df, search_path):
         # hybrid data
         if "Hybrid" in file:
             # save participant id for later
-            ids.append(temp['participantID'])
+            idsHybrid.append(temp['participantID'].zfill(3))
             # for each area
             for i in range(len(temp['_stationDataFrames'])):
                 if temp['_stationDataFrames'][i]["stationID"]:
@@ -203,6 +216,8 @@ def getInGameMS(df, search_path):
 
         # first person data
         elif "Firstperson" in file:
+            # save participant id for later
+            idsFp.append(temp['participantID'].zfill(3))
             # for each area
             for i in range(len(temp['_stationDataFrames'])):
                 if temp['_stationDataFrames'][i]["stationID"]:
@@ -211,11 +226,38 @@ def getInGameMS(df, search_path):
                     # save motion sickness score
                     firstPerson[stationID].append(score)
 
-    if len(df["ID"]) != len(ids):
-        raise ValueError("Number of participants in questionnaire data vs. game data don't match!")
+    idsHybrid = sorted(idsHybrid)
+    idsFp = sorted(idsFp)
 
-    if df["ID"].tolist() != ids:
-        raise ValueError("Participant IDs in questionnaire data vs. game data don't match!")
+    # check if the IDs of the files vs. the questionnaire data match
+    if len(df["ID"]) != len(idsHybrid):
+        print("IDs in the excel file:")
+        print(df["ID"].tolist())
+        print("IDs of all the hybrid files:")
+        print(idsHybrid)
+        raise ValueError("Number of participants in questionnaire data vs. HYBRID game data don't match!")
+
+    if len(df["ID"]) != len(idsFp):
+        print("IDs in the excel file:")
+        print(df["ID"].tolist())
+        print("IDs of all the first person files:")
+        print(idsFp)
+        raise ValueError("Number of participants in questionnaire data vs. FIRSTPERSON game data don't match!")
+
+    if df["ID"].tolist() != idsHybrid:
+        print("IDs in the excel file:")
+        print(df["ID"].tolist())
+        print("IDs of all the hybrid files:")
+        print(idsHybrid)
+        raise ValueError("Participant IDs in questionnaire data vs. HYBRID game data don't match!")
+
+    if df["ID"].tolist() != idsFp:
+        print("IDs in the excel file:")
+        print(df["ID"].tolist())
+        print("IDs of all the first person files:")
+        print(idsFp)
+        raise ValueError("Participant IDs in questionnaire data vs. FIRSTPERSON game data don't match!")
+
 
     # add motion sickness score of each area to the data frame
     df["H_0_MS"] = hybrid[0]
