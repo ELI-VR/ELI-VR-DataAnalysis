@@ -1,0 +1,3 @@
+[submodule "ELI-DATA"]
+	path = ELI-DATA
+	url = https://github.com/Z3rca/ELI-DATA
